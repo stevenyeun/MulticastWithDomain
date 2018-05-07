@@ -16,8 +16,8 @@ namespace Demo
             recvMessage = recvMessage.ToLower();
         }
 
-        public static UDPMulticastSenderWithDomain sender = new UDPMulticastSenderWithDomain(MULTICAST_DOMAIN.CONTROL);
-        public static UDPMulticastReceiverWithDomain receiver = new UDPMulticastReceiverWithDomain(MULTICAST_DOMAIN.CONTROL, ReceiveBufferCallback);
+        public static UDPMulticastSenderWithDomain sender = new UDPMulticastSenderWithDomain(MULTICAST_DOMAIN.CONTROL, MULTICAST_CHANNEL.CH1);
+        public static UDPMulticastReceiverWithDomain receiver = new UDPMulticastReceiverWithDomain(MULTICAST_DOMAIN.CONTROL, MULTICAST_CHANNEL.CH1, ReceiveBufferCallback);
         static void Main(string[] args)
         {
           

@@ -13,8 +13,23 @@ namespace SocketLib_Multicast
     public enum MULTICAST_DOMAIN
     {
         CONTROL = 1,
-        UISTATUS,
+        UI_STATUS,
         ETC      
+    }
+    public enum MULTICAST_CHANNEL
+    {
+        CH1 = 10001,
+        CH2,
+        CH3,
+        CH4,
+        CH5,
+        CH6,
+        CH7,
+        CH8,
+        CH9,
+        CH10,
+        CH11,
+        CH12
     }
 
     public class UDPMulticastSenderWithDomain
@@ -22,7 +37,7 @@ namespace SocketLib_Multicast
         private UdpClient udpMulticastClient = new UdpClient();
         private IPEndPoint remoteEP;
 
-        public UDPMulticastSenderWithDomain(MULTICAST_DOMAIN domain)
+        public UDPMulticastSenderWithDomain(MULTICAST_DOMAIN domain, MULTICAST_CHANNEL channel)
         {
             IPAddress multicastaddress;
             switch (domain)
@@ -30,7 +45,7 @@ namespace SocketLib_Multicast
                 case MULTICAST_DOMAIN.CONTROL:
                     multicastaddress = IPAddress.Parse("224.0.0.1");
                     break;
-                case MULTICAST_DOMAIN.UISTATUS:
+                case MULTICAST_DOMAIN.UI_STATUS:
                     multicastaddress = IPAddress.Parse("224.0.0.2");
                     break;
                 case MULTICAST_DOMAIN.ETC:
@@ -42,7 +57,7 @@ namespace SocketLib_Multicast
             }
  
             udpMulticastClient.JoinMulticastGroup(multicastaddress);
-            remoteEP = new IPEndPoint(multicastaddress, 2222);       
+            remoteEP = new IPEndPoint(multicastaddress, (int)channel);       
         }
 
         public void SendStatus(string msg)
@@ -56,7 +71,7 @@ namespace SocketLib_Multicast
     {
         public delegate void ReceiveBufferCallback(byte[] receiveBuffer);
 
-        public UDPMulticastReceiverWithDomain(MULTICAST_DOMAIN domain, ReceiveBufferCallback callBackFunc)
+        public UDPMulticastReceiverWithDomain(MULTICAST_DOMAIN domain, MULTICAST_CHANNEL channel, ReceiveBufferCallback callBackFunc)
         {
 
             IPAddress multicastaddress;
@@ -65,7 +80,7 @@ namespace SocketLib_Multicast
                 case MULTICAST_DOMAIN.CONTROL:
                     multicastaddress = IPAddress.Parse("224.0.0.1");
                     break;
-                case MULTICAST_DOMAIN.UISTATUS:
+                case MULTICAST_DOMAIN.UI_STATUS:
                     multicastaddress = IPAddress.Parse("224.0.0.2");
                     break;
                 case MULTICAST_DOMAIN.ETC:
@@ -76,7 +91,7 @@ namespace SocketLib_Multicast
                     break;
             }
 
-            int port = 2222;
+            int port = (int)channel;
         
             // 소켓 생성 및 필요시 소켓 옵션 지정
             Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
