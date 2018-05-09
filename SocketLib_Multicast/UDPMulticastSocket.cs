@@ -60,7 +60,7 @@ namespace SocketLib_Multicast
             remoteEP = new IPEndPoint(multicastaddress, (int)channel);       
         }
 
-        public void SendStatus(string msg)
+        public void SendPacket(string msg)
         {           
             byte[] buffer = null;
             buffer = Encoding.Unicode.GetBytes(msg);

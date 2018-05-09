@@ -40,7 +40,7 @@ namespace Demo
                 timer.Stop();
 
              
-                Program.sender.SendStatus("aaaaaaaaaa");
+                Program.sender.SendPacket("aaaaaaaaaa");
 
                 timer.Start();
             };

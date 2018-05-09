@@ -3,3 +3,10 @@
 Demo/obj/
 SocketLib_Multicast/obj/
 .vs/
+*.iobj
+*.ipdb
+*.pdb
+*.pch
+*.ilk
+*.lik
+
