@@ -14,6 +14,7 @@ namespace SocketLib_Multicast
     {
         CONTROL = 1,
         UI_STATUS,
+        REF_POINTS,
         ETC      
     }
     public enum MULTICAST_CHANNEL
