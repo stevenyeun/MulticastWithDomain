@@ -12,10 +12,20 @@ namespace SocketLib_Multicast
 
     public enum MULTICAST_DOMAIN
     {
+        /// <summary>
+        /// 명령, 요청
+        /// </summary>
         CONTROL = 1,
-        UI_STATUS,
-        REF_POINTS,
+
+       
+        /// <summary>
+        /// 정보수신
+        /// </summary>
+        UI_STATUS,//UI변경상태
+        REF_POINTS_INFO,//참조점들 정보
+        TRACK_INFO,//추적표적정보
         ETC      
+        /////////////////////////
     }
     public enum MULTICAST_CHANNEL
     {
@@ -33,6 +43,42 @@ namespace SocketLib_Multicast
         CH12
     }
 
+    public class BUFFER
+    {
+        public const int SIZE = 65536/2;
+    }
+
+    public class Converter
+    {      
+        static public IPAddress DomainToIPAddress(MULTICAST_DOMAIN domain)
+        {
+            IPAddress multicastaddress;
+            switch (domain)
+            {
+                case MULTICAST_DOMAIN.CONTROL:
+                    multicastaddress = IPAddress.Parse("224.0.0.1");
+                    break;
+                case MULTICAST_DOMAIN.UI_STATUS:
+                    multicastaddress = IPAddress.Parse("224.0.0.2");
+                    break;
+                case MULTICAST_DOMAIN.REF_POINTS_INFO:
+                    multicastaddress = IPAddress.Parse("224.0.0.3");
+                    break;
+                case MULTICAST_DOMAIN.ETC:
+                    multicastaddress = IPAddress.Parse("224.0.0.4");
+                    break;
+
+                default:
+                    multicastaddress = IPAddress.Parse("224.0.0.1");
+                    break;
+            }
+
+            return multicastaddress;
+        }
+    }
+
+
+    /*
     public class UDPMulticastSenderWithDomain
     {
         private UdpClient udpMulticastClient = new UdpClient();
@@ -40,76 +86,65 @@ namespace SocketLib_Multicast
 
         public UDPMulticastSenderWithDomain(MULTICAST_DOMAIN domain, MULTICAST_CHANNEL channel)
         {
-            IPAddress multicastaddress;
-            switch (domain)
-            {
-                case MULTICAST_DOMAIN.CONTROL:
-                    multicastaddress = IPAddress.Parse("224.0.0.1");
-                    break;
-                case MULTICAST_DOMAIN.UI_STATUS:
-                    multicastaddress = IPAddress.Parse("224.0.0.2");
-                    break;
-                case MULTICAST_DOMAIN.ETC:
-                    multicastaddress = IPAddress.Parse("224.0.0.3");
-                    break;
-                default:
-                     multicastaddress = IPAddress.Parse("224.0.0.1");
-                    break;
-            }
+            IPAddress multicastaddress = Converter.DomainToIPAddress(domain);
+         
  
             udpMulticastClient.JoinMulticastGroup(multicastaddress);
-            remoteEP = new IPEndPoint(multicastaddress, (int)channel);       
+            remoteEP = new IPEndPoint(multicastaddress, (int)channel);
+
         }
 
         public void SendPacket(string msg)
         {           
-            byte[] buffer = null;
-            buffer = Encoding.Unicode.GetBytes(msg);
+            byte[] buffer = new byte[BUFFER.SIZE];
+            byte[] temp = Encoding.Unicode.GetBytes(msg);
+
+            Array.Copy(temp, buffer, temp.Length);
             udpMulticastClient.Send(buffer, buffer.Length, remoteEP);
         }
     }
-    public class UDPMulticastReceiverWithDomain
+    */
+    public class UDPMulticastSocketWithDomain
     {
+        private Socket m_sock;
+        IPAddress m_multicastAddress;
+        private int m_nMulticastPort;
+        public void SendPacket(string msg)
+        {
+            byte[] buffer = new byte[BUFFER.SIZE];
+            byte[] temp = Encoding.Unicode.GetBytes(msg);
+
+            Array.Copy(temp, buffer, temp.Length);
+
+            EndPoint ep = new IPEndPoint(m_multicastAddress, m_nMulticastPort);
+            int n = m_sock.SendTo(buffer, 0, buffer.Length, SocketFlags.None, ep);
+        }
         public delegate void ReceiveBufferCallback(byte[] receiveBuffer);
 
-        public UDPMulticastReceiverWithDomain(MULTICAST_DOMAIN domain, MULTICAST_CHANNEL channel, ReceiveBufferCallback callBackFunc)
+        public UDPMulticastSocketWithDomain(MULTICAST_DOMAIN domain, MULTICAST_CHANNEL channel, ReceiveBufferCallback callBackFunc)
         {
 
-            IPAddress multicastaddress;
-            switch (domain)
-            {
-                case MULTICAST_DOMAIN.CONTROL:
-                    multicastaddress = IPAddress.Parse("224.0.0.1");
-                    break;
-                case MULTICAST_DOMAIN.UI_STATUS:
-                    multicastaddress = IPAddress.Parse("224.0.0.2");
-                    break;
-                case MULTICAST_DOMAIN.ETC:
-                    multicastaddress = IPAddress.Parse("224.0.0.3");
-                    break;
-                default:
-                    multicastaddress = IPAddress.Parse("224.0.0.1");
-                    break;
-            }
+            m_multicastAddress = Converter.DomainToIPAddress(domain);
 
-            int port = (int)channel;
+            m_nMulticastPort = (int)channel;
         
             // 소켓 생성 및 필요시 소켓 옵션 지정
-            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            sock.ExclusiveAddressUse = false;
+            m_sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            m_sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);          
+            m_sock.ExclusiveAddressUse = false;
+
             // 소켓 바인드
-            sock.Bind(new IPEndPoint(IPAddress.Any, port));
+            m_sock.Bind(new IPEndPoint(IPAddress.Any, m_nMulticastPort));
 
             // 멀티캐스트 그룹에 가입
-            IPAddress multicastIP = multicastaddress;
-            sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastIP, IPAddress.Any));
+            IPAddress multicastIP = m_multicastAddress;
+            m_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastIP, IPAddress.Any));
 
-            byte[] buff = new byte[1024];
-            EndPoint ep = new IPEndPoint(IPAddress.Any, 0);
-
+            //수신
             Task.Run(() =>
             {
+                byte[] buff = new byte[BUFFER.SIZE];
+                EndPoint ep = new IPEndPoint(IPAddress.Any, 0);
                 while (true)
                 {
                     try
@@ -117,7 +152,7 @@ namespace SocketLib_Multicast
                         // 데이타 수신
                         //Console.WriteLine("recv blocking in multicastReceiverSocket Port={0}", nMulticastReceiverPort);
                         //var recvBuffer;
-                        int n = sock.ReceiveFrom(buff, 0, buff.Length, SocketFlags.None, ref ep);
+                        int n = m_sock.ReceiveFrom(buff, 0, buff.Length, SocketFlags.None, ref ep);
                         //var buffer;
                         //sock.ReceiveFrom(buffer, ref ep);
                         //string recvMessage = Encoding.ASCII.GetString(buff, 0, buff.Length);
@@ -133,17 +168,36 @@ namespace SocketLib_Multicast
                     {
                         System.Console.WriteLine(e.Message);
                         Thread.Sleep(5000);
-
                         // 멀티캐스트 그룹에서 탈퇴
-                        sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.DropMembership, new MulticastOption(multicastIP, IPAddress.Any));
-                        sock.Close();
+                        m_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.DropMembership, new MulticastOption(multicastIP, IPAddress.Any));
+                        m_sock.Close();
+
                     }
                     Thread.Sleep(1);
                 }
+             
             });
+
+           
         }
         
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public class UDPMulticastSender
     {
