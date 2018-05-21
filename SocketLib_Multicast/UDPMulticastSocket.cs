@@ -21,14 +21,16 @@ namespace SocketLib_Multicast
         /// <summary>
         /// 정보수신
         /// </summary>
-        UI_STATUS,//UI변경상태
+        UI_STATE_INFO,//UI변경상태
         REF_POINTS_INFO,//참조점들 정보
         TRACK_INFO,//추적표적정보
-        ETC      
+        CAMERA_INFO,//카메라정보
+        COMMON//공통정보      
         /////////////////////////
     }
     public enum MULTICAST_CHANNEL
     {
+        COMMON = 10000,
         CH1 = 10001,
         CH2,
         CH3,
@@ -58,14 +60,20 @@ namespace SocketLib_Multicast
                 case MULTICAST_DOMAIN.CONTROL:
                     multicastaddress = IPAddress.Parse("224.0.0.1");
                     break;
-                case MULTICAST_DOMAIN.UI_STATUS:
+                case MULTICAST_DOMAIN.UI_STATE_INFO:
                     multicastaddress = IPAddress.Parse("224.0.0.2");
                     break;
                 case MULTICAST_DOMAIN.REF_POINTS_INFO:
                     multicastaddress = IPAddress.Parse("224.0.0.3");
                     break;
-                case MULTICAST_DOMAIN.ETC:
+                case MULTICAST_DOMAIN.TRACK_INFO:
                     multicastaddress = IPAddress.Parse("224.0.0.4");
+                    break;
+                case MULTICAST_DOMAIN.CAMERA_INFO:
+                    multicastaddress = IPAddress.Parse("224.0.0.5");
+                    break;
+                case MULTICAST_DOMAIN.COMMON:
+                    multicastaddress = IPAddress.Parse("224.0.0.6");
                     break;
 
                 default:
@@ -112,8 +120,11 @@ namespace SocketLib_Multicast
         public void SendPacket(string msg)
         {
             byte[] buffer = new byte[BUFFER.SIZE];
+#if false
             byte[] temp = Encoding.Unicode.GetBytes(msg);
-
+#else
+            byte[] temp = Encoding.UTF8.GetBytes(msg);
+#endif
             Array.Copy(temp, buffer, temp.Length);
 
             EndPoint ep = new IPEndPoint(m_multicastAddress, m_nMulticastPort);
