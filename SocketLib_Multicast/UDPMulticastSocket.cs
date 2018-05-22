@@ -16,8 +16,9 @@ namespace SocketLib_Multicast
         /// 명령, 요청
         /// </summary>
         CONTROL = 1,
+        CONTROL_OBJ,
 
-       
+
         /// <summary>
         /// 정보수신
         /// </summary>
@@ -60,20 +61,23 @@ namespace SocketLib_Multicast
                 case MULTICAST_DOMAIN.CONTROL:
                     multicastaddress = IPAddress.Parse("224.0.0.1");
                     break;
-                case MULTICAST_DOMAIN.UI_STATE_INFO:
+                case MULTICAST_DOMAIN.CONTROL_OBJ:
                     multicastaddress = IPAddress.Parse("224.0.0.2");
                     break;
-                case MULTICAST_DOMAIN.REF_POINTS_INFO:
+                case MULTICAST_DOMAIN.UI_STATE_INFO:
                     multicastaddress = IPAddress.Parse("224.0.0.3");
                     break;
-                case MULTICAST_DOMAIN.TRACK_INFO:
+                case MULTICAST_DOMAIN.REF_POINTS_INFO:
                     multicastaddress = IPAddress.Parse("224.0.0.4");
                     break;
-                case MULTICAST_DOMAIN.CAMERA_INFO:
+                case MULTICAST_DOMAIN.TRACK_INFO:
                     multicastaddress = IPAddress.Parse("224.0.0.5");
                     break;
-                case MULTICAST_DOMAIN.COMMON:
+                case MULTICAST_DOMAIN.CAMERA_INFO:
                     multicastaddress = IPAddress.Parse("224.0.0.6");
+                    break;
+                case MULTICAST_DOMAIN.COMMON:
+                    multicastaddress = IPAddress.Parse("224.0.0.7");
                     break;
 
                 default:
