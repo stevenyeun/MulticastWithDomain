@@ -160,7 +160,7 @@ namespace SocketLib_Multicast
 
             // 멀티캐스트 그룹에 가입
             IPAddress multicastIP = m_multicastAddress;
-            m_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastIP, IPAddress.Any));
+            m_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback/*Loopback 설정*/, new MulticastOption(multicastIP, IPAddress.Any));
 
             //수신
             Task.Run(() =>
