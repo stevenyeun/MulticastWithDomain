@@ -16,8 +16,8 @@ namespace Demo
             recvMessage = recvMessage.ToLower();
         }
 
-        public static UDPMulticastSenderWithDomain sender = new UDPMulticastSenderWithDomain(MULTICAST_DOMAIN.CONTROL, MULTICAST_CHANNEL.CH1);
-        public static UDPMulticastReceiverWithDomain receiver = new UDPMulticastReceiverWithDomain(MULTICAST_DOMAIN.CONTROL, MULTICAST_CHANNEL.CH1, ReceiveBufferCallback);
+        
+        public static UDPMulticastSocketWithDomain socket = new UDPMulticastSocketWithDomain(MULTICAST_DOMAIN.CONTROL, MULTICAST_CHANNEL.CH1, ReceiveBufferCallback);
         static void Main(string[] args)
         {
           
@@ -40,7 +40,7 @@ namespace Demo
                 timer.Stop();
 
              
-                Program.sender.SendPacket("aaaaaaaaaa");
+                Program.socket.SendPacket("aaaaaaaaaa");
 
                 timer.Start();
             };
