@@ -163,7 +163,7 @@ namespace SocketLib_Multicast
 
             try
             {
-#if true
+#if false
                 int loopback = (int)m_sock.GetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback);
                 m_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastIP, IPAddress.Any));
                 m_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback/*Loopback 설정*/, loopback);
