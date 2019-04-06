@@ -143,7 +143,7 @@ namespace SocketLib_Multicast
         }
         public delegate void ReceiveBufferCallback(byte[] receiveBuffer);
 
-        public UDPMulticastSocketWithDomain(MULTICAST_DOMAIN domain, MULTICAST_CHANNEL channel, ReceiveBufferCallback callBackFunc)
+        public UDPMulticastSocketWithDomain(MULTICAST_DOMAIN domain, MULTICAST_CHANNEL channel, ReceiveBufferCallback callBackFunc, string localIPAddr = "")
         {
 
             m_multicastAddress = Converter.DomainToIPAddress(domain);
@@ -156,7 +156,13 @@ namespace SocketLib_Multicast
             m_sock.ExclusiveAddressUse = false;
 
             // 소켓 바인드
-            m_sock.Bind(new IPEndPoint(IPAddress.Any, m_nMulticastPort));
+            if (localIPAddr == "")
+                m_sock.Bind(new IPEndPoint(IPAddress.Any, m_nMulticastPort));
+            else
+            {
+                //아이피 지정 바인드
+                m_sock.Bind(new IPEndPoint(IPAddress.Parse(localIPAddr), m_nMulticastPort));                
+            }
 
             // 멀티캐스트 그룹에 가입
             IPAddress multicastIP = m_multicastAddress;
@@ -219,104 +225,6 @@ namespace SocketLib_Multicast
         }
         
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public class UDPMulticastSender
-    {
-        private UdpClient udpMulticastClient = new UdpClient();
-        private IPEndPoint remoteEP;
-
-        public UDPMulticastSender(string ipAddr, int port)
-        {
-            IPAddress multicastaddress = IPAddress.Parse(ipAddr);
-            udpMulticastClient.JoinMulticastGroup(multicastaddress);
-            remoteEP = new IPEndPoint(multicastaddress, port);
-        }
-
-        public void SendPacket(byte[] buffer)
-        {
-            //System.Console.WriteLine(msg);
-            //byte[] buffer = null;
-            //buffer = Encoding.Unicode.GetBytes(msg);
-            udpMulticastClient.Send(buffer, buffer.Length, remoteEP);
-        }
-    }
-    public class UDPMulticastReceiver
-    {
-        public delegate void ReceiveBufferCallback(byte[] receiveBuffer);
-
-        public UDPMulticastReceiver(string ipAddr, int port, ReceiveBufferCallback callBackFunc)
-        {
-            //int port = 2222;
-            //string ipAddr = "239.0.0.200";
-
-            // 소켓 생성 및 필요시 소켓 옵션 지정
-            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            sock.ExclusiveAddressUse = false;
-            // 소켓 바인드
-            sock.Bind(new IPEndPoint(IPAddress.Any, port));
-
-            // 멀티캐스트 그룹에 가입
-            IPAddress multicastIP = IPAddress.Parse(ipAddr);
-            sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastIP, IPAddress.Any));
-
-            byte[] buff = new byte[1024];
-            EndPoint ep = new IPEndPoint(IPAddress.Any, 0);
-
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    try
-                    {
-                        // 데이타 수신
-                        //Console.WriteLine("recv blocking in multicastReceiverSocket Port={0}", nMulticastReceiverPort);
-                        //var recvBuffer;
-                        int n = sock.ReceiveFrom(buff, 0, buff.Length, SocketFlags.None, ref ep);
-                        //var buffer;
-                        //sock.ReceiveFrom(buffer, ref ep);
-                        //string recvMessage = Encoding.ASCII.GetString(buff, 0, buff.Length);
-                        string recvMessage = Encoding.UTF8.GetString(buff, 0, n);
-                        //Console.WriteLine("Port={0} {1}", port, recvMessage);
-
-                        byte[] sendBuffer = new byte[n];
-
-                        Array.Copy(buff, 0, sendBuffer, 0, n);
-                        callBackFunc(sendBuffer);
-                    }
-                    catch (Exception e)
-                    {
-                        System.Console.WriteLine(e.Message);
-                        Thread.Sleep(5000);
-
-                        // 멀티캐스트 그룹에서 탈퇴
-                        sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.DropMembership, new MulticastOption(multicastIP, IPAddress.Any));
-                        sock.Close();
-                    }
-                    Thread.Sleep(1);
-                }
-            });
-        }
-
-    }
-
-
 }
 
 
