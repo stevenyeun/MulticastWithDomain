@@ -11,18 +11,20 @@ namespace Demo
     {
         private static void ReceiveBufferCallback(byte[] receiveBuffer)
         {
-            string recvMessage = Encoding.Unicode.GetString(receiveBuffer);
+            string recvMessage = Encoding.UTF8.GetString(receiveBuffer);
             System.Console.WriteLine("receiveMessage : " + recvMessage);
             recvMessage = recvMessage.ToLower();
         }
 
         
-        public static UDPMulticastSocketWithDomain socket = new UDPMulticastSocketWithDomain(MULTICAST_DOMAIN.CONTROL, MULTICAST_CHANNEL.CH1, ReceiveBufferCallback);
+        public static UDPMulticastSocketWithDomain socket = new UDPMulticastSocketWithDomain(
+            MULTICAST_DOMAIN.TRACK_INFO, MULTICAST_CHANNEL.COMMON, ReceiveBufferCallback);
+
         static void Main(string[] args)
         {
           
 
-            StartTimerSendPacket();
+            //StartTimerSendPacket();
 
             Console.WriteLine("Press <Enter> to exit... ");
             while (Console.ReadKey().Key != ConsoleKey.Enter)
