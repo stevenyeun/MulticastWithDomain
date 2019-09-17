@@ -28,7 +28,8 @@ namespace SocketLib_Multicast
         INTEREST_TRACK_INFO,//관심표적정보
         CAMERA_INFO,//카메라정보
         COMMON,//공통정보      
-        CONTROL_PANORAMA//공통정보      
+        CONTROL_PANORAMA,//파노라마정보
+        RECORD//
         /////////////////////////
     }
     public enum MULTICAST_CHANNEL
@@ -86,6 +87,9 @@ namespace SocketLib_Multicast
                     break;
                 case MULTICAST_DOMAIN.CONTROL_PANORAMA:
                     multicastaddress = IPAddress.Parse("224.0.0.9");
+                    break;
+                case MULTICAST_DOMAIN.RECORD:
+                    multicastaddress = IPAddress.Parse("224.0.0.10");
                     break;
                 default:
                     multicastaddress = IPAddress.Parse("224.0.0.1");
