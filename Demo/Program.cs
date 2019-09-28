@@ -1,9 +1,12 @@
-﻿using SocketLib_Multicast;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SocketLib_Multicast;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Demo
 {
@@ -12,13 +15,19 @@ namespace Demo
         private static void ReceiveBufferCallback(byte[] receiveBuffer)
         {
             string recvMessage = Encoding.UTF8.GetString(receiveBuffer);
-            System.Console.WriteLine("receiveMessage : " + recvMessage);
-            recvMessage = recvMessage.ToLower();
+            //recvMessage = recvMessage.Replace("\0", "");
+            //recvMessage = recvMessage.Replace("\"", "\\r\\n");
+            //System.Console.WriteLine("receiveMessage : " + recvMessage);
+            //recvMessage = recvMessage.ToLower();
+
+       
+            string prettyJson = JToken.Parse(recvMessage).ToString(Newtonsoft.Json.Formatting.Indented);
+            System.Console.WriteLine("receiveMessage : " + prettyJson);
         }
 
         
         public static UDPMulticastSocketWithDomain socket = new UDPMulticastSocketWithDomain(
-            MULTICAST_DOMAIN.TRACK_INFO, MULTICAST_CHANNEL.COMMON, ReceiveBufferCallback);
+            MULTICAST_DOMAIN.CAMERA_INFO, MULTICAST_CHANNEL.COMMON, ReceiveBufferCallback);
 
         static void Main(string[] args)
         {
