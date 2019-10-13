@@ -30,7 +30,8 @@ namespace SocketLib_Multicast
         COMMON,//공통정보      
         CONTROL_PANORAMA,//파노라마정보
         RECORD,//녹화 정보
-        FIRE_MONITORING//화재감시 정보
+        FIRE_MONITORING,//화재감시 정보
+        VIDEO//비디오 정보
         /////////////////////////
     }
     public enum MULTICAST_CHANNEL
@@ -94,6 +95,9 @@ namespace SocketLib_Multicast
                     break;
                 case MULTICAST_DOMAIN.FIRE_MONITORING:
                     multicastaddress = IPAddress.Parse("224.0.0.11");
+                    break;
+                case MULTICAST_DOMAIN.VIDEO:
+                    multicastaddress = IPAddress.Parse("224.0.0.12");
                     break;
                 default:
                     multicastaddress = IPAddress.Parse("224.0.0.1");
