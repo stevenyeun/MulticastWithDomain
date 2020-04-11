@@ -224,13 +224,14 @@ namespace SocketLib_Multicast
                         //var buffer;
                         //sock.ReceiveFrom(buffer, ref ep);
                         //string recvMessage = Encoding.ASCII.GetString(buff, 0, buff.Length);
-                        string recvMessage = Encoding.UTF8.GetString(buff, 0, n);
+                        //string recvMessage = Encoding.UTF8.GetString(buff, 0, n);
                         //Console.WriteLine("Port={0} {1}", port, recvMessage);
 
                         byte[] sendBuffer = new byte[n];
 
                         Array.Copy(buff, 0, sendBuffer, 0, n);
-                        callBackFunc(sendBuffer);
+                        if(callBackFunc != null)
+                            callBackFunc(sendBuffer);
                     }
                     catch (Exception e)
                     {
