@@ -16,29 +16,29 @@ namespace SocketLib_Multicast
         /// 명령, 요청
         /// </summary>
         CONTROL = 1,
-        CONTROL_OBJ,
+        CONTROL_OBJ = 1001,
 
 
         /// <summary>
         /// 정보수신
         /// </summary>
-        UI_STATE_INFO,//UI변경상태
-        REF_POINTS_INFO,//참조점들 정보
-        TRACK_INFO,//추적표적정보
-        INTEREST_TRACK_INFO,//관심표적정보
-        CAMERA_INFO,//카메라정보
-        COMMON,//공통정보      
-        CONTROL_PANORAMA,//파노라마정보
-        RECORD,//녹화 정보
-        FIRE_MONITORING,//화재감시 정보
-        VIDEO,// 비디오
-        REPORT_STATUS//상태보고
+        UI_STATE_INFO = 1002,//UI변경상태
+        REF_POINTS_INFO = 1003,//참조점들 정보
+        TRACK_INFO = 1004,//추적표적정보
+        INTEREST_TRACK_INFO = 1005,//관심표적정보
+        CAMERA_INFO = 1006,//카메라정보
+        COMMON = 1007,//공통정보      
+        CONTROL_PANORAMA = 1008,//파노라마정보
+        RECORD = 1009,//녹화 정보
+        FIRE_MONITORING = 1010,//화재감시 정보
+        VIDEO = 1011,// 비디오
+        REPORT_STATUS = 1012//상태보고
         /////////////////////////
     }
     public enum MULTICAST_CHANNEL
     {
-        COMMON = 10000,
-        CH1 = 10001,
+        COMMON = 0,
+        CH1,
         CH2,
         CH3,
         CH4,
@@ -57,93 +57,118 @@ namespace SocketLib_Multicast
         public const int SIZE = 65536/2;
     }
 
-    public class Converter
-    {      
-        static public IPAddress DomainToIPAddress(MULTICAST_DOMAIN domain)
-        {
-            IPAddress multicastaddress;
-            switch (domain)
-            {
-                case MULTICAST_DOMAIN.CONTROL:
-                    multicastaddress = IPAddress.Parse("224.0.0.1");
-                    break;
-                case MULTICAST_DOMAIN.CONTROL_OBJ:
-                    multicastaddress = IPAddress.Parse("224.0.0.2");
-                    break;
-                case MULTICAST_DOMAIN.UI_STATE_INFO:
-                    multicastaddress = IPAddress.Parse("224.0.0.3");
-                    break;
-                case MULTICAST_DOMAIN.REF_POINTS_INFO:
-                    multicastaddress = IPAddress.Parse("224.0.0.4");
-                    break;
-                case MULTICAST_DOMAIN.TRACK_INFO:
-                    multicastaddress = IPAddress.Parse("224.0.0.5");
-                    break;
-                case MULTICAST_DOMAIN.INTEREST_TRACK_INFO:
-                    multicastaddress = IPAddress.Parse("224.0.0.6");
-                    break;
-                case MULTICAST_DOMAIN.CAMERA_INFO:
-                    multicastaddress = IPAddress.Parse("224.0.0.7");
-                    break;
-                case MULTICAST_DOMAIN.COMMON:
-                    multicastaddress = IPAddress.Parse("224.0.0.8");
-                    break;
-                case MULTICAST_DOMAIN.CONTROL_PANORAMA:
-                    multicastaddress = IPAddress.Parse("224.0.0.9");
-                    break;
-                case MULTICAST_DOMAIN.RECORD:
-                    multicastaddress = IPAddress.Parse("224.0.0.10");
-                    break;
-                case MULTICAST_DOMAIN.FIRE_MONITORING:
-                    multicastaddress = IPAddress.Parse("224.0.0.11");
-                    break;
-                case MULTICAST_DOMAIN.VIDEO:
-                    multicastaddress = IPAddress.Parse("224.0.0.12");
-                    break;
-                case MULTICAST_DOMAIN.REPORT_STATUS:
-                    multicastaddress = IPAddress.Parse("224.0.0.13");
-                    break;
-                default:
-                    multicastaddress = IPAddress.Parse("224.0.0.1");
-                    break;
-            }
+//    public class Converter
+//    {      
+//        static public int DomainToPort(MULTICAST_DOMAIN domain)
+//        {
+//            /*
+//            224.0.0.69~100
+//            */
+//            IPAddress multicastaddress = IPAddress.Parse("224.0.0.70");            
+//#if true
+//            switch (domain)
+//            {
+//                case MULTICAST_DOMAIN.CONTROL:
+//                    multicastaddress = IPAddress.Parse("224.0.0.70");
+//                    break;
+//                case MULTICAST_DOMAIN.CONTROL_OBJ:
+//                    multicastaddress = IPAddress.Parse("224.0.0.71");
+//                    break;
+//                case MULTICAST_DOMAIN.UI_STATE_INFO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.72");
+//                    break;
+//                case MULTICAST_DOMAIN.REF_POINTS_INFO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.73");
+//                    break;
+//                case MULTICAST_DOMAIN.TRACK_INFO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.74");
+//                    break;
+//                case MULTICAST_DOMAIN.INTEREST_TRACK_INFO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.75");
+//                    break;
+//                case MULTICAST_DOMAIN.CAMERA_INFO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.76");
+//                    break;
+//                case MULTICAST_DOMAIN.COMMON:
+//                    multicastaddress = IPAddress.Parse("224.0.0.77");
+//                    break;
+//                case MULTICAST_DOMAIN.CONTROL_PANORAMA:
+//                    multicastaddress = IPAddress.Parse("224.0.0.78");
+//                    break;
+//                case MULTICAST_DOMAIN.RECORD:
+//                    multicastaddress = IPAddress.Parse("224.0.0.79");
+//                    break;
+//                case MULTICAST_DOMAIN.FIRE_MONITORING:
+//                    multicastaddress = IPAddress.Parse("224.0.0.80");
+//                    break;
+//                case MULTICAST_DOMAIN.VIDEO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.81");
+//                    break;
+//                case MULTICAST_DOMAIN.REPORT_STATUS:
+//                    multicastaddress = IPAddress.Parse("224.0.0.82");
+//                    break;
+//                default:
+//                    multicastaddress = IPAddress.Parse("224.0.0.70");
+//                    break;
+//            }
+//#else
+//            switch (domain)
+//            {
+//                case MULTICAST_DOMAIN.CONTROL:
+//                    multicastaddress = IPAddress.Parse("224.0.0.1");
+//                    break;
+//                case MULTICAST_DOMAIN.CONTROL_OBJ:
+//                    multicastaddress = IPAddress.Parse("224.0.0.2");
+//                    break;
+//                case MULTICAST_DOMAIN.UI_STATE_INFO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.3");
+//                    break;
+//                case MULTICAST_DOMAIN.REF_POINTS_INFO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.4");
+//                    break;
+//                case MULTICAST_DOMAIN.TRACK_INFO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.5");
+//                    break;
+//                case MULTICAST_DOMAIN.INTEREST_TRACK_INFO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.6");
+//                    break;
+//                case MULTICAST_DOMAIN.CAMERA_INFO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.7");
+//                    break;
+//                case MULTICAST_DOMAIN.COMMON:
+//                    multicastaddress = IPAddress.Parse("224.0.0.8");
+//                    break;
+//                case MULTICAST_DOMAIN.CONTROL_PANORAMA:
+//                    multicastaddress = IPAddress.Parse("224.0.0.9");
+//                    break;
+//                case MULTICAST_DOMAIN.RECORD:
+//                    multicastaddress = IPAddress.Parse("224.0.0.10");
+//                    break;
+//                case MULTICAST_DOMAIN.FIRE_MONITORING:
+//                    multicastaddress = IPAddress.Parse("224.0.0.11");
+//                    break;
+//                case MULTICAST_DOMAIN.VIDEO:
+//                    multicastaddress = IPAddress.Parse("224.0.0.12");
+//                    break;
+//                case MULTICAST_DOMAIN.REPORT_STATUS:
+//                    multicastaddress = IPAddress.Parse("224.0.0.13");
+//                    break;
+//                default:
+//                    multicastaddress = IPAddress.Parse("224.0.0.1");
+//                    break;
+//            }
+//#endif
 
-            return multicastaddress;
-        }
-    }
+//            return multicastaddress;
+//        }
+//    }
 
 
-    /*
-    public class UDPMulticastSenderWithDomain
-    {
-        private UdpClient udpMulticastClient = new UdpClient();
-        private IPEndPoint remoteEP;
-
-        public UDPMulticastSenderWithDomain(MULTICAST_DOMAIN domain, MULTICAST_CHANNEL channel)
-        {
-            IPAddress multicastaddress = Converter.DomainToIPAddress(domain);
-         
- 
-            udpMulticastClient.JoinMulticastGroup(multicastaddress);
-            remoteEP = new IPEndPoint(multicastaddress, (int)channel);
-
-        }
-
-        public void SendPacket(string msg)
-        {           
-            byte[] buffer = new byte[BUFFER.SIZE];
-            byte[] temp = Encoding.Unicode.GetBytes(msg);
-
-            Array.Copy(temp, buffer, temp.Length);
-            udpMulticastClient.Send(buffer, buffer.Length, remoteEP);
-        }
-    }
-    */
     public class UDPMulticastSocketWithDomain
     {
         private Socket m_sock;
-        IPAddress m_multicastAddress;
-        private int m_nMulticastPort;
+        public IPAddress MulticastAddress { get; set; }
+        public int MulticastPort { get; set; }
         public void SendPacket(string msg)
         {
             byte[] buffer = new byte[BUFFER.SIZE];
@@ -154,16 +179,16 @@ namespace SocketLib_Multicast
 #endif
             Array.Copy(temp, buffer, temp.Length);
 
-            EndPoint ep = new IPEndPoint(m_multicastAddress, m_nMulticastPort);
+            EndPoint ep = new IPEndPoint(MulticastAddress, MulticastPort);
             int n = m_sock.SendTo(buffer, 0, buffer.Length, SocketFlags.None, ep);
         }
         public delegate void ReceiveBufferCallback(byte[] receiveBuffer);
 
         public UDPMulticastSocketWithDomain(MULTICAST_DOMAIN domain, MULTICAST_CHANNEL channel, ReceiveBufferCallback callBackFunc, string strLocalIPAddr = "")
         {
-            m_multicastAddress = Converter.DomainToIPAddress(domain);
+            MulticastAddress = IPAddress.Parse("224.0.0.70");
           
-            m_nMulticastPort = (int)channel;
+            MulticastPort = (int)domain + (int)channel;
             try
             {
                 // 소켓 생성 및 필요시 소켓 옵션 지정
@@ -180,15 +205,15 @@ namespace SocketLib_Multicast
                 if (strLocalIPAddr == "")
                 {
                     localIPAddr = IPAddress.Any;
-                    localEP = new IPEndPoint(IPAddress.Any, m_nMulticastPort);
-                    mcastOption = new MulticastOption(m_multicastAddress, IPAddress.Any);                    
+                    localEP = new IPEndPoint(IPAddress.Any, MulticastPort);
+                    mcastOption = new MulticastOption(MulticastAddress, IPAddress.Any);                    
                 }
                 else
                 {
                     //아이피 지정 바인드
                     localIPAddr = IPAddress.Parse(strLocalIPAddr);
-                    localEP = new IPEndPoint(localIPAddr, m_nMulticastPort);                    
-                    mcastOption = new MulticastOption(m_multicastAddress, localIPAddr);
+                    localEP = new IPEndPoint(localIPAddr, MulticastPort);                    
+                    mcastOption = new MulticastOption(MulticastAddress, localIPAddr);
                 }
                 m_sock.Bind(localEP);
 
@@ -238,7 +263,7 @@ namespace SocketLib_Multicast
                         System.Console.WriteLine(e.Message);
                         Thread.Sleep(5000);
                         // 멀티캐스트 그룹에서 탈퇴
-                        m_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.DropMembership, new MulticastOption(m_multicastAddress, IPAddress.Any));
+                        m_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.DropMembership, new MulticastOption(MulticastAddress, IPAddress.Any));
                         m_sock.Close();
 
                     }
