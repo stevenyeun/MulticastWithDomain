@@ -15,7 +15,7 @@ namespace SocketLib_Multicast
         /// <summary>
         /// 명령, 요청
         /// </summary>
-        CONTROL = 1,
+        CONTROL = 0,
         CONTROL_OBJ = 1001,
 
 
@@ -32,7 +32,8 @@ namespace SocketLib_Multicast
         RECORD = 1009,//녹화 정보
         FIRE_MONITORING = 1010,//화재감시 정보
         VIDEO = 1011,// 비디오
-        REPORT_STATUS = 1012//상태보고
+        REPORT_STATUS = 1012,//상태보고
+        HOT_POINTS_INFO = 13000,//HotPoint 정보
         /////////////////////////
     }
     public enum MULTICAST_CHANNEL
