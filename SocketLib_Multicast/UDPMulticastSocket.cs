@@ -172,16 +172,9 @@ namespace SocketLib_Multicast
         public int MulticastPort { get; set; }
         public void SendPacket(string msg)
         {
-            byte[] buffer = new byte[msg.Length];
-#if false
-            byte[] temp = Encoding.Unicode.GetBytes(msg);
-#else
-            byte[] temp = Encoding.UTF8.GetBytes(msg);
-#endif
-            Array.Copy(temp, buffer, temp.Length);
-
+           byte[] temp = Encoding.UTF8.GetBytes(msg);
             EndPoint ep = new IPEndPoint(MulticastAddress, MulticastPort);
-            int n = m_sock.SendTo(buffer, 0, buffer.Length, SocketFlags.None, ep);
+            int n = m_sock.SendTo(temp, 0, temp.Length, SocketFlags.None, ep);
         }
         public delegate void ReceiveBufferCallback(byte[] receiveBuffer);
 
