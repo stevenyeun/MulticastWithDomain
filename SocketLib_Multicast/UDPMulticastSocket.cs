@@ -172,7 +172,7 @@ namespace SocketLib_Multicast
         public int MulticastPort { get; set; }
         public void SendPacket(string msg)
         {
-            byte[] buffer = new byte[BUFFER.SIZE];
+            byte[] buffer = new byte[msg.Length];
 #if false
             byte[] temp = Encoding.Unicode.GetBytes(msg);
 #else
