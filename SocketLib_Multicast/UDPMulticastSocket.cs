@@ -24,8 +24,8 @@ namespace SocketLib_Multicast
         /// </summary>
         UI_STATE_INFO = 1002,//UI변경상태
         REF_POINTS_INFO = 1003,//참조점들 정보
-        TRACK_INFO = 1004,//추적표적정보
-        INTEREST_TRACK_INFO = 1005,//관심표적정보
+        TRACK_INFO = 11000,//추적표적정보
+        INTEREST_TRACK_INFO = 12000,//관심표적정보
         CAMERA_INFO = 1006,//카메라정보
         COMMON = 1007,//공통정보      
         CONTROL_PANORAMA = 1008,//파노라마정보
