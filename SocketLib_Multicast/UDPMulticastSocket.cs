@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -22,8 +22,10 @@ namespace SocketLib_Multicast
         /// <summary>
         /// 정보수신
         /// </summary>
-        UI_STATE_INFO = 1002,//UI변경상태
+        UI_STATE_INFO = 30002,//UI변경상태
         REF_POINTS_INFO = 1003,//참조점들 정보
+        TRACK_INFO_CTL = 30004,//AI서버제어
+        INTEREST_TRACK_INFO_CTL = 30005,//관심표적제어/응답
         TRACK_INFO = 11000,//추적표적정보
         INTEREST_TRACK_INFO = 12000,//관심표적정보
         CAMERA_INFO = 1006,//카메라정보
